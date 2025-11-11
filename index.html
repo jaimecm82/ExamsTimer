@@ -6,10 +6,10 @@
 <title>Exams Clock</title>
 <style>
   :root{
-    --bg-color: #a80b2f; /* tono borgoña similar a la imagen */
+    --bg-color: #ab1538; /* tono borgoña similar a la imagen */
     --accent: #ffffff;
     --muted: rgba(255,255,255,0.85);
-    --overlay: rgba(0,0,0,0.18);
+    --overlay: rgba(9, 9, 9, 0.18);
     --font-sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
   }
 
@@ -25,9 +25,9 @@
 
   /* background image if provided (reloj_examenes.jpg in same folder) */
   body.bg-image {
-    background-image: url('reloj_examenes.jpg');
-    background-size: cover;
-    background-position: center;
+    background-image: url('assets/school_logo.jpg');
+    background-size: auto 20vh;
+    background-position: top center;
     background-repeat: no-repeat;
   }
 
@@ -54,10 +54,10 @@
 
   .time {
     font-weight:700;
-    font-size: 12vw; /* responsive big digits */
+    font-size: 16vw; /* responsive big digits */
     letter-spacing: 0.01em;
-    margin: 0;
-    text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+    margin: 30px;
+    text-shadow: 12px  12px 18px rgba(0,0,0,0.45);
   }
 
   .date {
@@ -90,7 +90,7 @@
     color:var(--accent);
     background: rgba(255,255,255,0.03);
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.25);
     cursor: default;
   }
 
@@ -124,17 +124,18 @@
   }
 </style>
 </head>
-<body class="bg-image">
+<body class="bg-image" >
 <div class="overlay" id="overlay">
+
   <div class="clock" id="clock">
     <div style="display:flex; align-items:center; gap:1rem; justify-content:center;">
       <!-- Optional small logo area; keep commented if not needed
-      <img src="logo.png" alt="Logo" style="height:6vh;">
+      <img src="assets/school_logo.jpg" alt="Logo" style="height:16vh;">
       -->
     </div>
     <h1 id="time" class="time">00:00:00</h1>
     <div id="date" class="date">Fecha</div>
-    <div class="mini" id="modeHint">Modo: reloj (hora del sistema). Presiona <strong>E</strong> para editar textos, <strong>F</strong> pantalla completa</div>
+    <div class="mini" id="modeHint">Mode: clock (system time). Press <strong>E</strong> for textbox editting, <strong>F</strong> fullscreen</div>
   </div>
 
   <div class="bottom-row" id="bottomRow" aria-hidden="false">
@@ -215,7 +216,7 @@
 
     miniEl.innerHTML = `Modo: cuenta atrás — termina el ${new Date(countdownTarget).toLocaleString()}. Presiona <strong>P</strong> para pausar.`;
   } else {
-    miniEl.innerHTML = `Modo: reloj (hora del sistema). Presiona <strong>E</strong> para editar textos, <strong>F</strong> pantalla completa`;
+    miniEl.innerHTML = `Mode: clock (system time). Press <strong>E</strong> for textbox editting, <strong>F</strong> fullscreen`;
   }
 
   // Helper format
