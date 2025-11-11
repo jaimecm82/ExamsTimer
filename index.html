@@ -1,378 +1,49 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Exams Clock</title>
-<style>
-  :root{
-    --bg-color: #ab1538; /* tono borgoña similar a la imagen */
-    --accent: #ffffff;
-    --muted: rgba(255,255,255,0.85);
-    --overlay: rgba(9, 9, 9, 0.18);
-    --font-sans: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-  }
-
-  html,body{
-    height:100%;
-    margin:0;
-    font-family: var(--font-sans);
-    background: var(--bg-color);
-    color: var(--accent);
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-  }
-
-  /* background image if provided (reloj_examenes.jpg in same folder) */
-  body.bg-image {
-    background-image: url('assets/school_logo.jpg');
-    background-size: auto 20vh;
-    background-position: top center;
-    background-repeat: no-repeat;
-  }
-
-  .overlay {
-    position:fixed;
-    inset:0;
-    background: var(--overlay);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap: 1rem;
-    padding: 2vw;
-    box-sizing:border-box;
-  }
-
-  /* Main clock */
-  .clock {
-    text-align:center;
-    user-select:none;
-    line-height:1;
-    width:100%;
-  }
-
-  .time {
-    font-weight:700;
-    font-size: 16vw; /* responsive big digits */
-    letter-spacing: 0.01em;
-    margin: 30px;
-    text-shadow: 12px  12px 18px rgba(0,0,0,0.45);
-  }
-
-  .date {
-    font-size: 3.2vw;
-    margin-top: 0.6rem;
-    color: var(--muted);
-  }
-
-  /* Four text boxes at bottom */
-  .bottom-row {
-    position: absolute;
-    left:0;
-    right:0;
-    bottom: 3vh;
-    display:flex;
-    gap:2%;
-    justify-content:space-around;
-    align-items:center;
-    padding: 0 2vw;
-    box-sizing:border-box;
-  }
-
-  .box {
-    flex: 1 1 20%;
-    min-width: 10%;
-    text-align:left;
-    font-weight:700;
-    font-size: 2.8vw;
-    padding: 1vh 1.2vw;
-    color:var(--accent);
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px;
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.25);
-    cursor: default;
-  }
-
-  .box[contenteditable="true"] {
-    outline: 2px dashed rgba(255,255,255,0.15);
-  }
-
-  /* small controls (hidden in projection) */
-  .controls {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(0,0,0,0.35);
-    color:var(--accent);
-    padding:8px 10px;
-    border-radius:8px;
-    font-size:14px;
-    z-index:999;
-  }
-
-  .mini {
-    font-size: 1.6vw;
-    color: var(--muted);
-    margin-top: .3rem;
-  }
-
-  @media (max-width:700px) {
-    .time { font-size: 20vw; }
-    .date { font-size: 5vw; }
-    .box { font-size: 4.5vw; }
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exams Clock</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-image" >
-<div class="overlay" id="overlay">
+<!-- ab1538 -->
+<body class="bg-[#ab1538] text-white font-sans">
+  <header>
+  </header>
+  <main>
+    <section class="flex flex-col justify-center items-center my-4">
+      <img src="assets/school_logo.jpg" alt="School Logo" class="w-64 h-64 object-cover ">
+      <h1><p id="hora" class="text-[160px] font-bold text-shadow-md shadow-gray-700 "/>00:00:00</h1>
+      <div id="date" class="text-3xl p-1">Fecha</div>
+      <div> <br></div>
+      <section class="flex gap-10 position-absolute top-4 right-4">
+        <textarea class="text-[35px] field-sizing-fixed w-65" rows="3"></textarea>
+        <textarea class="text-[35px] field-sizing-fixed w-65" rows="3"></textarea>
+        <textarea class="text-[35px] field-sizing-fixed w-65" rows="3"></textarea>
+        <textarea class="text-[35px] field-sizing-fixed w-65" rows="3"></textarea>
+      </section>
+    </section>
+    <p>&copy; 2025 The British School </p>
+    <br>
 
-  <div class="clock" id="clock">
-    <div style="display:flex; align-items:center; gap:1rem; justify-content:center;">
-      <!-- Optional small logo area; keep commented if not needed
-      <img src="assets/school_logo.jpg" alt="Logo" style="height:16vh;">
-      -->
-    </div>
-    <h1 id="time" class="time">00:00:00</h1>
-    <div id="date" class="date">Fecha</div>
-    <div class="mini" id="modeHint">Mode: clock (system time). Press <strong>E</strong> for textbox editting, <strong>F</strong> fullscreen</div>
-  </div>
+  </main>
+  <footer></footer> 
 
-  <div class="bottom-row" id="bottomRow" aria-hidden="false">
-    <div class="box" id="box1">Text box 1</div>
-    <div class="box" id="box2">Text box 2</div>
-    <div class="box" id="box3">Text box 3</div>
-    <div class="box" id="box4">Text box 4</div>
-  </div>
-
-  <div class="controls" id="controls">
-    <div><strong>Controles rápidos</strong></div>
-    <div style="margin-top:6px; font-size:13px;">
-      F = pantalla completa • E = editar textos • P = pausar/reanudar • H = ocultar UI
-    </div>
-    <div style="margin-top:8px; font-size:12px; color:var(--muted);">
-      Para cuenta atrás, añade a la URL: <code>?mode=countdown&end=YYYY-MM-DDTHH:MM:SS</code><br>
-      o <code>?mode=countdown&minutes=90</code>
-    </div>
-  </div>
-</div>
-
-<script>
-/*
-  Reloj para exámenes
-  - Soporta 2 modos:
-    1) mode=clock (por defecto) -> muestra hora actual
-    2) mode=countdown -> cuenta atrás hasta 'end' (ISO DATETIME) o 'minutes' (desde ahora)
-  - Atajos:
-    F -> fullscreen
-    E -> editar textos (toggle contenteditable en las 4 cajas)
-    P -> pausar/reanudar (solo para countdown)
-    H -> ocultar/mostrar UI (controls y hint)
-*/
-
-(function(){
-  const timeEl = document.getElementById('time');
-  const dateEl = document.getElementById('date');
-  const miniEl = document.getElementById('modeHint');
-  const controls = document.getElementById('controls');
-  const bottomRow = document.getElementById('bottomRow');
-
-  const boxes = [
-    document.getElementById('box1'),
-    document.getElementById('box2'),
-    document.getElementById('box3'),
-    document.getElementById('box4'),
-  ];
-
-  // read URL params
-  const params = new URLSearchParams(location.search);
-  const mode = (params.get('mode') || 'clock').toLowerCase();
-
-  // countdown state
-  let countdownTarget = null;
-  let paused = false;
-  let pausedRemaining = null;
-
-  if (mode === 'countdown') {
-    // either minutes or end timestamp
-    const minutes = params.get('minutes');
-    const end = params.get('end'); // expect ISO datetime: 2025-11-11T12:00:00
-
-    if (minutes) {
-      const mins = parseFloat(minutes);
-      if (!isNaN(mins)) {
-        countdownTarget = Date.now() + mins*60*1000;
+  <script>
+    // JavaScript code can be added here
+    /* Reloj para examenes */
+    (function(){
+      function actualizarReloj(){
+        const now = new Date();
+        const horas = String(now.getHours()).padStart(2,'0');
+        const minutos = String(now.getMinutes()).padStart(2,'0');
+        const segundos = String(now.getSeconds()).padStart(2,'0');
+        document.getElementById('hora').textContent = `${horas}:${minutos}:${segundos}`;
+        document.getElementById('date').textContent = now.toLocaleDateString(undefined, { weekday: 'long', year:'numeric', month:'long', day:'numeric' });
       }
-    } else if (end) {
-      // try parse
-      const t = Date.parse(end);
-      if (!isNaN(t)) countdownTarget = t;
-    }
-
-    if (!countdownTarget) {
-      // fallback: 90 minutes
-      countdownTarget = Date.now() + 90*60*1000;
-    }
-
-    miniEl.innerHTML = `Modo: cuenta atrás — termina el ${new Date(countdownTarget).toLocaleString()}. Presiona <strong>P</strong> para pausar.`;
-  } else {
-    miniEl.innerHTML = `Mode: clock (system time). Press <strong>E</strong> for textbox editting, <strong>F</strong> fullscreen`;
-  }
-
-  // Helper format
-  function pad(n){ return n<10 ? '0'+n : n; }
-
-  // Update loop
-  function update(){
-    const now = Date.now();
-
-    if (mode === 'countdown') {
-      if (paused && pausedRemaining != null) {
-        // display pausedRemaining
-        displayDuration(pausedRemaining);
-      } else {
-        let diff = countdownTarget - now;
-        if (diff < 0) diff = 0;
-        displayDuration(diff);
-        if (diff === 0) {
-          // flash or change color
-          document.body.style.animation = 'blink 1s infinite';
-          miniEl.innerHTML = '¡Tiempo terminado!';
-        }
-      }
-    } else {
-      const d = new Date(now);
-      const h = pad(d.getHours());
-      const m = pad(d.getMinutes());
-      const s = pad(d.getSeconds());
-      timeEl.textContent = `${h}:${m}:${s}`;
-      dateEl.textContent = d.toLocaleDateString(undefined, { weekday: 'long', year:'numeric', month:'long', day:'numeric' });
-    }
-  }
-
-  function displayDuration(ms){
-    // ms milliseconds remaining: format HH:MM:SS
-    const totalSec = Math.floor(ms/1000);
-    const sec = totalSec % 60;
-    const totalMin = Math.floor(totalSec/60);
-    const min = totalMin % 60;
-    const hours = Math.floor(totalMin/60);
-    // show days if >24h
-    if (hours >= 24) {
-      const days = Math.floor(hours/24);
-      const remH = hours % 24;
-      timeEl.textContent = `${days}d ${pad(remH)}:${pad(min)}:${pad(sec)}`;
-    } else {
-      timeEl.textContent = `${pad(hours)}:${pad(min)}:${pad(sec)}`;
-    }
-    // date area can show human readable end time
-    const until = new Date(Date.now() + ms);
-    dateEl.textContent = `Quedan — ${until.toLocaleString(undefined, { hour12:false })}`;
-  }
-
-  // initial update + interval
-  update();
-  const timer = setInterval(update, 250);
-
-  // keyboard shortcuts
-  document.addEventListener('keydown', (ev) => {
-    const k = ev.key.toLowerCase();
-    if (k === 'f') {
-      // fullscreen
-      toggleFullscreen();
-    } else if (k === 'e') {
-      toggleEdit();
-    } else if (k === 'p') {
-      togglePause();
-    } else if (k === 'h') {
-      toggleUI();
-    }
-  });
-
-  function toggleFullscreen(){
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
-    }
-  }
-
-  function toggleEdit(){
-    const editable = boxes[0].isContentEditable;
-    boxes.forEach(b => {
-      b.contentEditable = (!editable).toString();
-      if (!editable) {
-        b.focus();
-        // move caret to end
-        const sel = window.getSelection();
-        sel.selectAllChildren(b);
-        sel.collapseToEnd();
-      }
-    });
-  }
-
-  function togglePause(){
-    if (mode !== 'countdown') return;
-    if (!paused) {
-      // compute remaining and set paused
-      const now = Date.now();
-      pausedRemaining = Math.max(0, countdownTarget - now);
-      paused = true;
-      miniEl.innerHTML = 'Cuenta atrás en pausa. Presiona P para reanudar.';
-    } else {
-      // resume
-      paused = false;
-      countdownTarget = Date.now() + (pausedRemaining || 0);
-      pausedRemaining = null;
-      miniEl.innerHTML = `Modo: cuenta atrás — termina el ${new Date(countdownTarget).toLocaleString()}. Presiona <strong>P</strong> para pausar.`;
-    }
-  }
-
-  function toggleUI(){
-    const hidden = controls.style.display === 'none';
-    controls.style.display = hidden ? 'block' : 'none';
-    miniEl.style.display = hidden ? 'block' : 'none';
-    bottomRow.style.display = hidden ? 'flex' : 'none';
-  }
-
-  // small accessible instructions if someone clicks bottom area -> edit
-  bottomRow.addEventListener('dblclick', () => toggleEdit());
-
-  // Prevent accidental text selection when projected (clicking)
-  document.addEventListener('mousedown', (e) => {
-    if (e.target.classList.contains('box') && e.target.isContentEditable) {
-      // allow editing
-    } else {
-      e.preventDefault();
-    }
-  });
-
-  // allow double click to toggle fullscreen
-  document.addEventListener('dblclick', (e) => {
-    // avoid interfering with edits
-    if (document.activeElement && document.activeElement.isContentEditable) return;
-    toggleFullscreen();
-  });
-
-  // initial texts can be passed through URL: t1..t4
-  for (let i=1;i<=4;i++){
-    const t = params.get('t'+i);
-    if (t) boxes[i-1].textContent = decodeURIComponent(t);
-  }
-
-  // hide mouse cursor after a few seconds (handy for projection)
-  let mouseTimer;
-  function hideCursorSoon(){
-    clearTimeout(mouseTimer);
-    document.body.style.cursor = 'default';
-    mouseTimer = setTimeout(() => {
-      document.body.style.cursor = 'none';
-    }, 3000);
-  }
-  document.addEventListener('mousemove', hideCursorSoon);
-  hideCursorSoon();
-
-})();
-</script>
+      setInterval(actualizarReloj,250);
+      actualizarReloj();
+    })();
+  </script>
 </body>
 </html>
